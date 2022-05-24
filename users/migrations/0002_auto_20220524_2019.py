@@ -22,7 +22,7 @@ def default_user_admin(apps, schema_editor):
     
     User = apps.get_model('users', 'User')
     User.objects.create_superuser(
-        username=getenv('ADMIN_USERNAME'), 
+        username='admin', 
         email=getenv('ADMIN_EMAIL'), 
         password=getenv('ADMIN_PASSWORD'),
         is_admin=True,
