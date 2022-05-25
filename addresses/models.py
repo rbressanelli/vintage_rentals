@@ -16,10 +16,11 @@ class Address(models.Model):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
       model = Address
-      id =  serializers.UUIDField(read_only=True)
-      street =  serializers.CharField(required=True)
-      complement =  serializers.CharField(required=True)
-      city =  serializers.CharField(required=True)
-      state =  serializers.CharField(required=True)
-      zip_code =  serializers.CharField(required=True)
-      country =  serializers.CharField(required=True)
+       fields = '__all__'
+        id =  serializers.UUIDField(read_only=True)
+        street =  serializers.CharField(required=True)
+        complement =  serializers.CharField(required=True)
+        city =  serializers.CharField(required=True)
+        state =  serializers.CharField(required=True)
+        zip_code =  serializers.CharField(required=True)
+        country =  serializers.CharField(required=True)
