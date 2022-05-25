@@ -41,6 +41,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=50, null=False)
     last_name = models.CharField(max_length=50, null=False)
+    username = models.CharField(max_length=255, unique=False, null=True)
     email = models.EmailField(max_length=255, unique=True, null=False)
     is_admin = models.BooleanField(default=False)
     cpf = models.CharField(max_length=11, unique=True, null=False)
@@ -52,7 +53,7 @@ class User(AbstractUser):
         'addresses.Address', on_delete=models.CASCADE, related_name='users', null=True
     )    
 
-USERNAME_FIELD = 'email'
-REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-objects = CustomUserManager()
+    objects = CustomUserManager()
