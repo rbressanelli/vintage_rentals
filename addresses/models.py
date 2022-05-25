@@ -12,7 +12,6 @@ class Address(models.Model):
     zip_code = models.CharField(max_length=25, null=False)
     country = models.CharField(max_length=100, null=False)
 
-
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
       model = Address
