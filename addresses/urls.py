@@ -1,5 +1,9 @@
 from django.urls import path
 
-from . import views
+from addresses.views import addresses
 
-urlpatterns =[]
+urlpatterns =[ 
+    path("get_adress/", ),
+    path("post_adress/", ),
+    path("update_adress/",),
+    path("delet_adress/",)]
