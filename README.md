@@ -1,4 +1,4 @@
-<h1 align="center"> <a href="#" alt="vintage rentals">Vintage Rentals</a> </h1>
+<h1 align="center"> <a href="#" alt="vintage rentals">📼Vintage Rentals📼</a> </h1>
  
 <h2>Contents</h2>
 
@@ -22,9 +22,9 @@ The customers can sign up for a new account in the application as customers only
 
 There is only one media of each.
 
-Only customers are allowed to rent medias and they can rent one media at a time.
+Only customers are allowed to rent medias and they can rent only one media at a time.
 
-The return date of a rented media is choosen by the customer. 
+The return date of a rented media is chosen by the customer.
 
 🎓 Project developed as second Capstone of Q4 back end module of the Fullstack Developer Course of [Kenzie Academy Brasil](https://kenzie.com.br/v2/).
 
@@ -64,7 +64,6 @@ The return date of a rented media is choosen by the customer.
 - <a name="postgreSQL" href="https://www.postgresql.org/docs/" target="_blank">PostgreSQL</a>
 - <a name="postman" href="https://www.postman.com/" target="_blank">Postman</a>
 
-
 <a name="requisites"></a>
 
 ### 4.1 Requisites ☑️
@@ -81,7 +80,6 @@ The return date of a rented media is choosen by the customer.
     <td align="center"><a href="https://github.com/raissalst" title="GitHub"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/85745938?v=4" width="100px;" alt=""/><br /><sub><b>Raissa Toledo</b></sub></a><br /><a href="https://www.linkedin.com/in/raissalstoledo/" title="Linkedin"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white"></a></td>
     <td align="center"><a href="https://github.com/rbressanelli" title="GitHub"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/79763201?s=96&v=4" alt="avatar" width="100px;" alt=""/><br /><sub><b>Roberto Bressanelli</b></sub></a><br /><a href="https://www.linkedin.com/in/robertobressanelli/" title="Linkedin"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white"></a></td>
     <td align="center"><a href="https://github.com/rbressanelli" title="GitHub"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/85689579?v=4" alt="avatar" width="100px;" alt=""/><br /><sub><b>Ângelo Vieira</b></sub></a><br /><a href="https://www.linkedin.com/in/%C3%A2ngelo-kaleu-vieira/" title="Linkedin"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?&style=flat-square&logo=linkedin&logoColor=white"></a></td>
-   
 
   </tr>
 </table>
