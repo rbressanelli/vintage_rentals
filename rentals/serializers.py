@@ -10,7 +10,8 @@ class RentalSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     extra_kwargs ={
-            'payment': {'read_only': True},            
+            'payment': {'read_only': True},
+                    
         }    
     
 
