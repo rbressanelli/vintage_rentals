@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import (ListAPIView, ListCreateAPIView,
-                                     RetrieveAPIView, RetrieveUpdateAPIView)
+                                     RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Request, Response
 
@@ -69,11 +69,14 @@ class GetUserProfileOrUpdateUserProfileView(RetrieveUpdateAPIView):
         return super().patch(request, *args, **kwargs)
 
 
-class DeactivateUserProfileView(APIView):
+class DeactivateUserProfileView(UpdateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def put(self, request):
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
         userLogged = User.objects.filter(email=request.user.email).first()
         userLogged.is_active = False
         userLogged.save()
