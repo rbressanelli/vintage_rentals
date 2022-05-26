@@ -1,13 +1,9 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, authenticate
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import (ListAPIView, ListCreateAPIView,
-                                     RetrieveAPIView, RetrieveUpdateAPIView,
-                                     UpdateAPIView)
+from rest_framework.generics import (ListCreateAPIView, RetrieveAPIView,
+                                     RetrieveUpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Request, Response
 
