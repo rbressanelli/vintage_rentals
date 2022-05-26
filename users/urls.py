@@ -1,8 +1,10 @@
 from django.urls import path
 
 from users.views import (DeactivateUserProfileView, FilterUserByUserIdView,
+                         FilterUserRentalHistoryByUserIdView,
+                         GetLoggedUserRentalHistoryView,
                          GetUserProfileOrUpdateUserProfileView, LoginUserView,
-                         RegisterAndListUsersView, FilterUserRentalHistoryByUserIdView, GetLoggedUserRentalHistoryView)
+                         RegisterAndListUsersView)
 
 urlpatterns = [
     path("users/", RegisterAndListUsersView.as_view()),
@@ -12,5 +14,4 @@ urlpatterns = [
     path("users/<user_id>/", FilterUserByUserIdView.as_view()),
     path("users/profile/rentals/", GetLoggedUserRentalHistoryView.as_view()),
     path("users/<user_id>/rentals/", FilterUserRentalHistoryByUserIdView.as_view()),
-
 ]
