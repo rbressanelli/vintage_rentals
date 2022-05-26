@@ -1,14 +1,17 @@
+from urllib import request
 from rest_framework import serializers
 
+from rentals.models import Rental
 
-class RentalSerializer(serializers.Serializer):
-    id = serializers.UUIDField(read_only=True)
-    rental_date = serializers.DateField()
-    planned_return_date = serializers.DateField()
-    return_date = serializers.DateField()
-    media_id = serializers.UUIDField()
-    user_id = serializers.UUIDField()
-    payment = PaymentSerializer(read_only=True)
+
+class RentalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rental
+        fields = '__all__'
+    
+    extra_kwargs ={
+            'payment': {'read_only': True},            
+        }    
     
 
 class CloseRentalSerializer(serializers.Serializer):
