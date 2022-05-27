@@ -7,29 +7,62 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Request, Response
 from payments.serializers import PaymentSerializer
 from payments.permissions import (IsClient, IsAdmin)
-import ipdb
 from .models import Payment
 from .serializers import PaymentSerializer
 from users.models import User
-from datetime import date
+from rentals.models import Rental
+from rentals.serializers import RentalSerializer
+import datetime 
+
 class paymentCreate(ListCreateAPIView):
 
-    dete_rental_inital = date()
-    date_rental_finish = date()
-    days = (date_rental_finish - date_rental_inital).days
-
     authentication_classes = [TokenAuthentication] 
+
     permission_classes = [IsAuthenticated, IsClient]
-    def post(self, request: Request):
-        self.request.data
+    
+    serializer_class = RentalSerializer
+    
+    def get_serializer_class(self, request: Request):
+     if self.request.method == "POST":
+        if not self.request.user.is_authenticated :
+            return Response({"error":"not loged"},status.HTTP_401_UNAUTHORIZED)
+  
+        payment_date = request.data
+            
+        findUser = get_object_or_404(User, pk = self.request.user.id)
+            
+        findRental = get_object_or_404(Rental, user = findUser)
+           
+        findRentalSerializer = RentalSerializer(findRental)
+
+        date_rental_inital = datetime.date(findRentalSerializer.planned_return_date,'%d-%m-%')
+
+        date_rental_finish = datetime.date(datetime.now(),'%d-%m-%Y')
+ 
+        days = (date_rental_finish - date_rental_inital).days
+
+        creat_payment_info = {
+                "amount": request.data.amount
+                "payment_date": Payment.dateTransform(payment_date)
+                "late_fee_per_day": request.data.late_fee_per_day
+                "user": ListUserSerializer(findUser)
+                "rental": findRentalSerializer
+            }
+        new_payment =Payment.payment_creation(**creat_payment_info)
+
+        return Response({"menssage":"payment created",
+        "total to pay":(new_payment.late_fee_per_day*days)+new_payment.amount},
+        status.HTTP_201_CREATED)
+            
 
 
 class paymentGet(APIView):
     authentication_classes = [TokenAuthentication] 
-    permission_classes = [IsAuthenticated, IsClient|| IsAdmin]
+    permission_classes = [IsAuthenticated, IsClient | IsAdmin]
+  
    def get(self,request:Request, payment_id = ''):
        
-       ipdb.set_trace() 
+       
        if self.request.IsAdmin:
            if payment_id:
                 try:
@@ -40,7 +73,7 @@ class paymentGet(APIView):
                     return Response({'errors': 'invalid payment id'}, 
                                      status=status.HTTP_404_NOT_FOUND)
             else:
-                payment_list = Payment.objects.all()
-                payment_list_serialyzer = PaymentSerializer(payment_list,many = True)
+                payment_list = get_object_or_404(Payment,user = request.user)
+                payment_list_serialyzer = PaymentSerializer(payment_list)
                 return Response(payment_list_serialyzer)
         
