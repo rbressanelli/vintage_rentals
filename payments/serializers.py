@@ -20,10 +20,3 @@ class PaymentSerializer(serializers.ModelSerializer):
     "late_fee_per_day"{"required":True,"default":1,99},
     "payment_date":{"required":True}
     }
-
-
-  extra_kwargs = {
-            "password": {"write_only": True},
-            "id": {"read_only": True},
-            "is_admin": {"required": False, "default": False},
-        }
