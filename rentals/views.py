@@ -12,7 +12,7 @@ from payments.models import Payment
 from medias.models import Media
 from users.models import User
 from payments.serializers import PaymentSerializer
-
+from .services import dateTransform
 
 class RentalView(ListAPIView):
     
@@ -31,6 +31,7 @@ class CloseRentalView(UpdateAPIView):
     queryset = Rental.objects.all()
     serializer_class = CloseRentalSerializer
 
+
     def update(self, request, pk, *args, **kwargs):
         
         rental = Rental.objects.filter(pk=pk).first()        
@@ -40,11 +41,10 @@ class CloseRentalView(UpdateAPIView):
         media = Media.objects.filter(pk=rental.media_id).first()
         user = User.objects.filter(pk=rental.user_id).first()
         
-        returned_date = datetime.datetime.strptime(returned_date, '%d/%m/%Y').date()                      
-        planned_return_date = datetime.datetime.strftime(rental.planned_return_date, '%Y-%m-%d')        
-        planned_return_date = datetime.datetime.strptime(planned_return_date, '%Y-%m-%d').date()
-        rental_date = datetime.datetime.strftime(rental.rental_date, '%Y-%m-%d')        
-        rental_date = datetime.datetime.strptime(rental_date, '%Y-%m-%d').date()
+        returned_date = datetime.datetime.strptime(returned_date, '%d/%m/%Y').date()                              
+        
+        planned_return_date = dateTransform(rental.planned_return_date)       
+        rental_date = dateTransform(rental.rental_date)
         
         returned_date_no_fee = returned_date - rental_date 
         
@@ -52,12 +52,23 @@ class CloseRentalView(UpdateAPIView):
         
         amount = returned_date_no_fee.days * media.rental_price_per_day          
                
-        payment.amount = amount + fee
+        amount = amount + fee
+        print(f'{amount:.2f}')
+        # user.rental_active = False        
+        # user.save()
+        # media.available = False
+        # media.save()        
         
-        # serializer = PaymentSerializer(data=request.data['late_fee_per_day'])
+        request.data['amount'] = f'{amount:.2f}'
+        request.data['late_fee_per_day'] = request.data['late_fee_per_day']
+        request.data['payment_date'] = returned_date
         
-        # # payment = Payment.objects.filter(rental_id=pk).first()
+        serializer = PaymentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # if not serializer.is_valid():
+        #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # print(serializer.data)
+        # payment = Payment.objects.create(**serializer.validated_data)
         
-        # rentals.save()
         
         return Response({}, status=status.HTTP_200_OK)
