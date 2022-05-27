@@ -1,5 +1,5 @@
 import uuid
-
+from rest_framework import serializers
 from django.db import models
 
 
@@ -16,13 +16,12 @@ class Address(models.Model):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
       model = Address
-      fields = '__all__'
-      extra_kawargs = {
-        "id" :  {"read_only"=True}
-        "street" :{'required':True}
-        "complement" :  {'required':True}
-        "city" :{'required':True}
-        "state" :  {'required':True}
-        "zip_code" : {'required':True}
-        "country" : {'required':True}
-            }
+      fields = [
+        "id",
+        "street",
+        "complement",
+        "city",
+        "state",
+        "zip_code",
+        "country"
+            ]
