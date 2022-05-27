@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from addresses.models import Address
 from addresses.serializers import AddressSerializer
+from medias.models import Media
+from rentals.models import Rental
 from users.models import User
 
 
@@ -148,3 +150,37 @@ class UpdateOrRetrieveUserProfileSerializer(serializers.ModelSerializer):
 
             instance.save()
             return instance
+
+
+from collections import OrderedDict
+
+
+class MediaForRentalListSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        result = super(MediaForRentalListSerializer, self).to_representation(instance)
+        return OrderedDict([(key, result[key]) for key in result if result[key]])
+
+    class Meta:
+        model = Media
+        fields = ["id", "title", "director", "artist"]
+
+
+class RentalForRentalListSerializer(serializers.ModelSerializer):
+    media = MediaForRentalListSerializer(read_only=True)
+
+    class Meta:
+        model = Rental
+        fields = ["id", "rental_date", "planned_return_date", "return_date", "media"]
+        depth = 1
+
+
+class ListUserRentalHistorySerializer(serializers.ModelSerializer):
+    rental_history = RentalForRentalListSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Rental
+        fields = ["rental_history"]
+
+
+class UserUUIDSerializer(serializers.Serializer):
+    uuid = serializers.UUIDField()
