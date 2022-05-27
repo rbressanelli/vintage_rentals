@@ -12,7 +12,7 @@ class MediaSerializer(serializers.ModelSerializer):
             'available': {'read_only':True, 'required':False},
             'condition': {'required':False},
             'director': {'required':False},
-            'artist':{'required':True},
+            'artist':{'required':False},
         }
 
 class FullMediaSerializer(serializers.ModelSerializer):
@@ -22,6 +22,7 @@ class FullMediaSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'artist': {'default': ''}
         }
+
 
 class HistoryRentals(serializers.ModelSerializer):
     # rental_history = RentalSerializer()

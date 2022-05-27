@@ -18,6 +18,7 @@ class MediaView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'artist', 'director']
 
+    
     # filter_backends = [filters.SearchFilter]
     # search_fields = ['title', 'artist', 'director']
     # def get_queryset(self):
@@ -29,13 +30,15 @@ class MediaView(generics.ListCreateAPIView):
     #         return queryset
     #     return super().get_queryset()
     def get(self, request, *args, **kwargs):
-        if not self.request.user.is_staff:
+        if self.request.user.is_anonymous:
+            return Response({"message": "Unauthorized."},status.HTTP_401_UNAUTHORIZED)
+        if not self.request.user.is_admin:
             medias = Media.objects.filter(available=True).all()
             serializer = MediaSerializer(medias, many=True)
             return Response(serializer.data, status.HTTP_200_OK)
         return super().get(request, *args, **kwargs)
     def get_serializer_class(self):
-        if self.request.user.is_staff:
+        if self.request.user.is_admin:
             return FullMediaSerializer
         return super().get_serializer_class()
     
