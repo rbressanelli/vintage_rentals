@@ -10,10 +10,12 @@ class Rental(models.Model):
     return_date = models.DateTimeField(default=None)
     
     user = models.ForeignKey(
-        'users.User', on_delete=models.CASCADE, related_name='rentals', null=True
+        'users.User', on_delete=models.CASCADE, related_name='rentals', null=True, unique=False
     )
     
     media = models.ForeignKey(
-        'medias.Media', on_delete=models.CASCADE, related_name='rentals', null=True
+        'medias.Media', on_delete=models.CASCADE, related_name='rentals', null=True, unique=False
     )    
+    
+    payment = models.OneToOneField('payments.Payment', on_delete=models.CASCADE, null=True, unique=True)
     

@@ -1,18 +1,17 @@
 from rest_framework import serializers
+from payments.serializers import PaymentSerializer
 
-from rentals.models import Rental
+from users.serializers import CreateUserByClientSerializer, MediaForRentalListSerializer
 
 
-class RentalSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rental
-        fields = '__all__'
+class RentalSerializer(serializers.Serializer):
+    id = serializers.UUIDField(read_only=True)
+    rental_date = serializers.DateTimeField()
+    planned_return_date = serializers.DateTimeField()
+    return_date = serializers.DateTimeField()    
     
-    extra_kwargs ={
-            'payment': {'read_only': True},                    
-        }      
-   
-
-class CloseRentalSerializer(serializers.Serializer):
-    return_date = serializers.DateField()
-    late_fee_per_day = serializers.FloatField()
+    payment = PaymentSerializer()
+    
+    media = MediaForRentalListSerializer() 
+    
+    user = CreateUserByClientSerializer() 
