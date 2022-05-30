@@ -6,7 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 import datetime
 
 from rentals.models import Rental
-from rentals.serializers import RentalSerializer
+from rentals.serializers import CloseRentalSerializer, RentalSerializer, ListRentalSerializer
 from rentals.permissions import IsAdminUser
 from payments.models import Payment
 from medias.models import Media
@@ -20,19 +20,30 @@ class RentalView(ListAPIView):
     permission_classes = [IsAdminUser]    
     
     queryset = Rental.objects.all()
-    serializer_class = RentalSerializer
+    serializer_class = ListRentalSerializer
 
+    def list(self, _, *args, **kwargs):
+        
+        rental = Rental.objects.all()
+        serializer = ListRentalSerializer(rental, many=True)
+        
+        return Response({'rental_history': 
+            serializer.data
+        })
 
 class CloseRentalView(APIView):
     
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
 
-    def put(self, request, pk):
-        
+    def put(self, request, pk):       
+            
+        close_rental_serializer = CloseRentalSerializer(data=request.data)
+        close_rental_serializer.is_valid(raise_exception=True)           
+    
         rental = Rental.objects.filter(pk=pk).first() 
         returned_date = request.data.pop('return_date')        
-       
+    
         media = Media.objects.filter(pk=rental.media_id).first()
         user = User.objects.filter(pk=rental.user_id).first()
         
@@ -47,12 +58,12 @@ class CloseRentalView(APIView):
         amount = number_days_no_fee.days * media.rental_price_per_day          
             
         amount = amount + fee  
-              
+            
         user.rental_active = False        
         user.save()
         # media.available = False
         # media.save()  
-  
+
         request.data['amount'] = f'{amount:.2f}'
         request.data['payment_date'] = returned_date        
     
@@ -68,3 +79,4 @@ class CloseRentalView(APIView):
         rental_serializer = RentalSerializer(rental)
         
         return Response(rental_serializer.data, status=status.HTTP_200_OK)
+    
