@@ -52,10 +52,12 @@ class MediaRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = "media_id" 
 
 
-class MediaRentalsView(generics.ListCreateAPIView):
+class MediaRentalsView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
     queryset = Media.objects.all()
     serializer_class = HistoryRentals
+    lookup_url_kwarg = "media_id" 
     
-    
+class MediaRentalsCreateView(generics.CreateAPIView):
+    ...
