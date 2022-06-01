@@ -4,11 +4,16 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from datetime import datetime
 from .serializers import FullMediaSerializer, MediaSerializer, HistoryRentals
 from .models import Media
+from rentals.models import Rental
+# from rentals.serializers import CreateRentalSerializer, RentalSerializer
+from users.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from .permissions import IsAdmin
+from .permissions import IsAdmin, IsCustomer
+from rest_framework.exceptions import PermissionDenied
 # Create your views here.
 class MediaView(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
@@ -17,7 +22,20 @@ class MediaView(generics.ListCreateAPIView):
     serializer_class = MediaSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'artist', 'director']
-
+    def create(self, request, *args, **kwargs):
+        valid = [ key for key in request.data.keys() ]
+        if 'artist' in valid and 'director' in valid:
+            return Response({'error': {
+                'media_type VHS': 'Inform only the director',
+                'media_type LP or K7': 'Inform only the artist'
+            }}, status=status.HTTP_400_BAD_REQUEST)
+        elif not 'artist' in valid and not 'director' in valid:
+            return Response({'error': 'You must inform an artist or a director'}, status=status.HTTP_400_BAD_REQUEST)
+        if request.data.get('director') and request.data.get('media_type').upper() != 'VHS':
+            return Response({'error': 'Use artist field for LP or K7 media types.'}, status=status.HTTP_400_BAD_REQUEST)
+        if request.data.get('artist') and request.data.get('media_type').upper() == 'VHS':
+            return Response({'error': 'Use director field for VHS media types.'}, status=status.HTTP_400_BAD_REQUEST)
+        return super().create(request, *args, **kwargs)
     
     # filter_backends = [filters.SearchFilter]
     # search_fields = ['title', 'artist', 'director']
@@ -60,4 +78,23 @@ class MediaRentalsView(generics.RetrieveAPIView):
     lookup_url_kwarg = "media_id" 
     
 class MediaRentalsCreateView(generics.CreateAPIView):
-    ...
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsCustomer]
+    queryset = Media.objects.all()
+    serializer_class = CreateRentalSerializer
+    def create(self, request, *args, **kwargs):
+        user = User.objects.filter(email=request.user).first()
+        media = Media.objects.filter(id=kwargs['media_id']).first()
+        request.data['rental_date'] = datetime.now()
+        request.data['return_date'] = datetime.strptime('2022-03-03', '%Y-%m-%d')
+        media.available = False
+        media.save()
+        user.rental_active = True
+        user.save()
+        serializer = CreateRentalSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['media'] = media
+        serializer.validated_data['user'] = user
+        rental = Rental.objects.create(**serializer.validated_data)
+        serializer = CreateRentalSerializer(rental)
+        return Response(serializer.data, status.HTTP_201_CREATED)
