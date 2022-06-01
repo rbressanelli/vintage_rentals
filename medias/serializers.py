@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from medias.models import Media
 from rentals.models import Rental
-from users.models import User
-# from rentals.serializers import RentalSerializer
+
 class MediaSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -39,19 +38,21 @@ class FullMediaSerializer(serializers.ModelSerializer):
             'artist': {'default': ''}
         }
 
-# class UserUUIDSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['id']
-
 class RentalListSerializer(serializers.ModelSerializer):
-    # user_id = UserUUIDSerializer()
+
     class Meta:
         model = Rental
         fields = ['id', 'rental_date', 'planned_return_date', 'return_date', 'user']
 
 
 class HistoryRentals(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if ret['artist']:
+            del ret['director']
+        elif ret['director']:
+            del ret['artist']
+        return ret 
     rentals = RentalListSerializer(read_only=True, many=True)
     class Meta:
         model = Media

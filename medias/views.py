@@ -7,7 +7,6 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from datetime import datetime
 from .serializers import FullMediaSerializer, MediaSerializer, HistoryRentals
 from .models import Media
-from django.db.models import Q
 from rentals.models import Rental
 from rentals.serializers import CreateRentalSerializer, RentalSerializer
 from users.models import User
@@ -15,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from .permissions import IsAdmin, IsCustomer
 from rest_framework.exceptions import PermissionDenied
+from rentals.services import dateTransform
 # Create your views here.
 class MediaView(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
@@ -38,16 +38,7 @@ class MediaView(generics.ListCreateAPIView):
         if request.data.get('artist') and request.data.get('media_type').upper() == 'VHS':
             return Response({'error': 'Use director field for VHS media types.'}, status=status.HTTP_400_BAD_REQUEST)
         return super().create(request, *args, **kwargs)
-    
-    def get_queryset(self):
-        artist = self.request.GET.get('artist', None)
-        director = self.request.GET.get('director', None)
-        title = self.request.GET.get('title', None)
-        # if route_parameter is not None:
-        #     queryset = Media.objects.filter(
-        #         title__icontains = route_parameter)
-        return Media.objects.filter(Q(CAMPO1__icontains=artist) | Q(CAMPO2__icontains=director) | Q(CAMPO3__icontains=title))
-        return super().get_queryset()
+  
     def get(self, request, *args, **kwargs):
         if self.request.user.is_anonymous:
             return Response({"message": "Unauthorized."},status.HTTP_401_UNAUTHORIZED)
@@ -86,8 +77,14 @@ class MediaRentalsCreateView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         user = User.objects.filter(email=request.user).first()
         media = Media.objects.filter(id=kwargs['media_id']).first()
+        if media.available == False:
+            return Response({"error": "This media is already rented."})
         request.data['rental_date'] = datetime.now()
-        request.data['return_date'] = datetime.strptime('2022-03-03', '%Y-%m-%d')
+        first_date = datetime.strptime(request.data['planned_return_date'], '%d/%m/%Y').date()
+        second_date = dateTransform(datetime.now())
+        if first_date < second_date:
+            return Response({"error":"Invalid date, return date less than current date."})
+   
         media.available = False
         media.save()
         user.rental_active = True
