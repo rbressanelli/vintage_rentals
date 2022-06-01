@@ -1,5 +1,5 @@
-from pkg_resources import require
 from rest_framework import serializers
+from medias.serializers import MediaRentalSerializer, MediaSerializer
 from payments.serializers import PaymentSerializer
 from rentals.models import Rental
 
@@ -8,15 +8,15 @@ from users.serializers import CreateUserByClientSerializer, MediaForRentalListSe
 
 class RentalSerializer(serializers.Serializer):
     id = serializers.UUIDField(read_only=True)
-    rental_date = serializers.DateTimeField()
-    planned_return_date = serializers.DateTimeField()
-    return_date = serializers.DateTimeField()    
+    rental_date = serializers.DateTimeField(required=False)
+    planned_return_date = serializers.DateTimeField(format="%d/%m/%Y", input_formats=['%d/%m/%Y', 'iso-8601'],required=False)
+    return_date = serializers.DateTimeField(required=False)    
     
-    payment = PaymentSerializer()
+    payment = PaymentSerializer(required=False)
     
-    media = MediaForRentalListSerializer() 
+    media = MediaForRentalListSerializer(required=False) 
     
-    user = CreateUserByClientSerializer() 
+    user = CreateUserByClientSerializer(required=False) 
 
 
 class ListRentalSerializer(serializers.ModelSerializer):
@@ -30,3 +30,12 @@ class ListRentalSerializer(serializers.ModelSerializer):
 class CloseRentalSerializer(serializers.Serializer):
     return_date = serializers.CharField()
     late_fee_per_day = serializers.FloatField()
+
+
+class CreateRentalSerializer(serializers.Serializer):
+    id = serializers.UUIDField(read_only=True)
+    rental_date = serializers.DateTimeField(required=False)
+    planned_return_date = serializers.DateTimeField(format="%d/%m/%Y", input_formats=['%d/%m/%Y', 'iso-8601'],required=False)
+    return_date = serializers.DateTimeField(required=False)     
+    
+    media = MediaRentalSerializer(required=False) 
