@@ -14,6 +14,7 @@ from users.models import User
 from payments.serializers import PaymentSerializer
 from .services import dateTransform
 
+
 class RentalView(ListAPIView):
     
     authentication_classes = [TokenAuthentication]
@@ -61,8 +62,8 @@ class CloseRentalView(APIView):
             
         user.rental_active = False        
         user.save()
-        # media.available = False
-        # media.save()  
+        media.available = True
+        media.save()  
 
         request.data['amount'] = f'{amount:.2f}'
         request.data['payment_date'] = returned_date        
