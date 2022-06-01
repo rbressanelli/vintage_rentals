@@ -7,11 +7,12 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from datetime import datetime
 from .serializers import FullMediaSerializer, MediaSerializer, HistoryRentals
 from .models import Media
+from django.db.models import Q
 from rentals.models import Rental
-# from rentals.serializers import CreateRentalSerializer, RentalSerializer
+from rentals.serializers import CreateRentalSerializer, RentalSerializer
 from users.models import User
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from rest_framework.filters import SearchFilter
 from .permissions import IsAdmin, IsCustomer
 from rest_framework.exceptions import PermissionDenied
 # Create your views here.
@@ -20,7 +21,8 @@ class MediaView(generics.ListCreateAPIView):
     permission_classes = [IsAdmin]
     queryset = Media.objects.all()
     serializer_class = MediaSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['title', 'artist', 'director']
     filterset_fields = ['title', 'artist', 'director']
     def create(self, request, *args, **kwargs):
         valid = [ key for key in request.data.keys() ]
@@ -37,16 +39,15 @@ class MediaView(generics.ListCreateAPIView):
             return Response({'error': 'Use director field for VHS media types.'}, status=status.HTTP_400_BAD_REQUEST)
         return super().create(request, *args, **kwargs)
     
-    # filter_backends = [filters.SearchFilter]
-    # search_fields = ['title', 'artist', 'director']
-    # def get_queryset(self):
-        
-    #     route_parameter = self.request.GET.get('title', None)
-    #     if route_parameter is not None:
-    #         queryset = Media.objects.filter(
-    #             title__icontains = route_parameter)
-    #         return queryset
-    #     return super().get_queryset()
+    def get_queryset(self):
+        artist = self.request.GET.get('artist', None)
+        director = self.request.GET.get('director', None)
+        title = self.request.GET.get('title', None)
+        # if route_parameter is not None:
+        #     queryset = Media.objects.filter(
+        #         title__icontains = route_parameter)
+        return Media.objects.filter(Q(CAMPO1__icontains=artist) | Q(CAMPO2__icontains=director) | Q(CAMPO3__icontains=title))
+        return super().get_queryset()
     def get(self, request, *args, **kwargs):
         if self.request.user.is_anonymous:
             return Response({"message": "Unauthorized."},status.HTTP_401_UNAUTHORIZED)
