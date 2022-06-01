@@ -14,7 +14,7 @@ class RentalSerializer(serializers.Serializer):
     
     payment = PaymentSerializer(required=False)
     
-    media = MediaForRentalListSerializer(required=False) 
+    media = MediaRentalSerializer(required=False) 
     
     user = CreateUserByClientSerializer(required=False) 
 
