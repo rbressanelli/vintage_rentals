@@ -134,13 +134,13 @@ class MediaRentalsCreateView(generics.CreateAPIView):
                 request.data["planned_return_date"], "%d/%m/%Y"
             ).date()
             second_date = dateTransform(datetime.now())
-            if first_date < second_date:
+            if first_date <= second_date:
                 return Response(
-                    {"error": "Invalid date, return date less than current date."}
+                    {"error": "Invalid date, return date must be after current date."}, status.HTTP_400_BAD_REQUEST
                 )
         except ValueError as err:
             return Response({"error": err.args}, status.HTTP_400_BAD_REQUEST)
-
+        
         media.available = False
         media.save()
         user.rental_active = True
