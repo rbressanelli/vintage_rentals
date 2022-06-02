@@ -12,7 +12,7 @@ from payments.models import Payment
 from medias.models import Media
 from users.models import User
 from payments.serializers import PaymentSerializer
-from .services import dateTransform
+from .services import dateTransform, verify_uuid
 
 
 class RentalView(ListAPIView):
@@ -37,14 +37,26 @@ class CloseRentalView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
 
-    def put(self, request, pk):       
+    def put(self, request, pk): 
+        
+        if not verify_uuid(pk):
+            return Response(
+                {"details": "UUID must be a valid uuid"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )      
             
         close_rental_serializer = CloseRentalSerializer(data=request.data)
         close_rental_serializer.is_valid(raise_exception=True)           
     
         rental = Rental.objects.filter(pk=pk).first() 
         returned_date = request.data.pop('return_date')        
-    
+        
+        if not rental:
+            return Response(
+                {"details": "Rental not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        
         media = Media.objects.filter(pk=rental.media_id).first()
         user = User.objects.filter(pk=rental.user_id).first()
         
