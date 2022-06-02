@@ -52,7 +52,7 @@ class LoginUserView(APIView):
             return Response({"token": token.key}, status=status.HTTP_200_OK)
 
         return Response(
-            {"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+            {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
 
 
@@ -82,7 +82,7 @@ class DeactivateUserProfileView(UpdateAPIView):
         userLogged.is_active = False
         userLogged.save()
         return Response(
-            {"message": "User has been deactivated."}, status=status.HTTP_200_OK
+            {"error": "User has been deactivated."}, status=status.HTTP_200_OK
         )
 
 
@@ -109,7 +109,7 @@ class FilterUserRentalHistoryByUserIdView(APIView):
 
         if not uuid_serializer.is_valid():
             return Response(
-                {"message": "URL parameter must be a valid UUID"},
+                {"error": "URL parameter must be a valid UUID"},
                 status.HTTP_400_BAD_REQUEST,
             )
 
@@ -131,7 +131,7 @@ class FilterUserRentalHistoryByUserIdView(APIView):
 
         except Http404:
             return Response(
-                {"message": "User does not exist"}, status.HTTP_404_NOT_FOUND
+                {"error": "User does not exist"}, status.HTTP_404_NOT_FOUND
             )
 
 
