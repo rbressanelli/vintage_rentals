@@ -43,7 +43,7 @@ class CloseRentalView(APIView):
 
         if not verify_uuid(pk):
             return Response(
-                {"details": "UUID must be a valid uuid"},
+                {"error": "UUID must be a valid uuid"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -55,7 +55,7 @@ class CloseRentalView(APIView):
 
         if not rental:
             return Response(
-                {"details": "Rental not found"},
+                {"error": "Rental not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -67,14 +67,16 @@ class CloseRentalView(APIView):
         returned_date = returned_date.date()
         planned_return_date = dateTransform(rental.planned_return_date)
         rental_date = dateTransform(rental.rental_date)
-
-        number_days_no_fee = planned_return_date - rental_date
-        fee = (returned_date - planned_return_date).days * request.data[
-            "late_fee_per_day"
-        ]
-        amount = number_days_no_fee.days * media.rental_price_per_day
-
-        amount = amount + fee
+        
+        if planned_return_date >= returned_date:
+            number_days_no_fee = returned_date - rental_date
+            amount = number_days_no_fee.days * media.rental_price_per_day
+        else:
+            number_days_no_fee = planned_return_date - rental_date
+            fee = (returned_date - planned_return_date).days * request.data[
+            "late_fee_per_day"]
+            amount = number_days_no_fee.days * media.rental_price_per_day
+            amount = amount + fee       
 
         user.rental_active = False
         user.save()
