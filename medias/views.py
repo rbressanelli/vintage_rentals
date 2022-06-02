@@ -20,7 +20,7 @@ from rentals.serializers import CreateRentalSerializer
 
 class MediaView(generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin, IsCustomer]
     queryset = Media.objects.all()
     serializer_class = MediaSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
@@ -47,19 +47,21 @@ class MediaView(generics.ListCreateAPIView):
             return Response({"message": "Unauthorized."},status.HTTP_401_UNAUTHORIZED)
         if not self.request.user.is_admin:
             medias = Media.objects.filter(available=True).all()
-            serializer = MediaSerializer(medias, many=True)
-            return Response(serializer.data, status.HTTP_200_OK)
+            # serializer = MediaSerializer(medias, many=True)
+            return super().get(request, *args, **kwargs)
+            
+
         return super().get(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.request.user.is_admin:
             return FullMediaSerializer
-        return super().get_serializer_class()
+        return super().get_serializer_class()  
       
 
 class MediaRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdmin, IsCustomer]
     queryset = Media.objects.all()
     serializer_class = FullMediaSerializer
     lookup_url_kwarg = "media_id" 
@@ -73,6 +75,11 @@ class MediaRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
         return super().delete(request, *args, **kwargs)   
 
+
+    def get(self, request, *args, **kwargs): 
+        if self.request.user.is_anonymous or not self.request.user.is_admin:
+            return Response({"message": "Unauthorized."},status.HTTP_401_UNAUTHORIZED)        
+        return super().get(request, *args, **kwargs)
 
 class MediaRentalsView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
