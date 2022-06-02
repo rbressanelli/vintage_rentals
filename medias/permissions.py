@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 
 class IsAdmin(BasePermission):
     def has_permission(self, request:Request, _):
-        if request.method == 'POST' and (
+        if request.method in ['POST', 'PATCH', 'DELETE'] and (
             request.user.is_anonymous or not request.user.is_admin):
             return False
         return True
