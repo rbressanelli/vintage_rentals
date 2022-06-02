@@ -64,6 +64,15 @@ class MediaRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FullMediaSerializer
     lookup_url_kwarg = "media_id" 
 
+    def delete(self, request:Request, *args, **kwargs):
+        media = Media.objects.filter(id=kwargs['media_id']).first()
+
+
+        if media.available == False:
+            return Response({"error": "Cannot delete media rented."}, status.HTTP_400_BAD_REQUEST)
+
+        return super().delete(request, *args, **kwargs)   
+
 
 class MediaRentalsView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
