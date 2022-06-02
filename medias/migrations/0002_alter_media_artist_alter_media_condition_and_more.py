@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medias', '0001_initial'),
+        ("medias", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='media',
-            name='artist',
+            model_name="media",
+            name="artist",
             field=models.CharField(max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='media',
-            name='condition',
-            field=models.CharField(default='good', max_length=255),
+            model_name="media",
+            name="condition",
+            field=models.CharField(default="good", max_length=255),
         ),
         migrations.AlterField(
-            model_name='media',
-            name='director',
+            model_name="media",
+            name="director",
             field=models.CharField(max_length=255, null=True),
         ),
     ]

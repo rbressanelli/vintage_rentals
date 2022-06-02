@@ -3,8 +3,8 @@ from uuid import UUID
 
 
 def dateTransform(data):
-    temp = datetime.datetime.strftime(data, '%Y-%m-%d')
-    return datetime.datetime.strptime(temp, '%Y-%m-%d').date()
+    temp = datetime.datetime.strftime(data, "%Y-%m-%d")
+    return datetime.datetime.strptime(temp, "%Y-%m-%d").date()
 
 
 def verify_uuid(uuid):
