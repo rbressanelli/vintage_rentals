@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medias', '0002_alter_media_artist_alter_media_condition_and_more'),
+        ("medias", "0002_alter_media_artist_alter_media_condition_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='media',
-            name='artist',
-            field=models.CharField(blank=True, default='', max_length=255, null=True),
+            model_name="media",
+            name="artist",
+            field=models.CharField(blank=True, default="", max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='media',
-            name='director',
-            field=models.CharField(blank=True, default='', max_length=255, null=True),
+            model_name="media",
+            name="director",
+            field=models.CharField(blank=True, default="", max_length=255, null=True),
         ),
     ]

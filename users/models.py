@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 
+
 class CustomUserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
 
@@ -50,10 +51,10 @@ class User(AbstractUser):
     is_active = models.BooleanField(default=True)
 
     address = models.ForeignKey(
-        'addresses.Address', on_delete=models.CASCADE, related_name='users', null=True
-    )    
+        "addresses.Address", on_delete=models.CASCADE, related_name="users", null=True
+    )
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()

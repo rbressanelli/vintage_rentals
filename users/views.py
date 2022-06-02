@@ -4,7 +4,8 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import (ListAPIView, ListCreateAPIView,
-                                     RetrieveAPIView, RetrieveUpdateAPIView, UpdateAPIView)
+                                     RetrieveAPIView, RetrieveUpdateAPIView,
+                                     UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Request, Response
 
