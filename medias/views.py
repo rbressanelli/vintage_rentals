@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.views import Response, Request
 
-from .permissions import IsAdmin, IsCustomer
+from .permissions import IsAdmin, IsCustomer, IsAdminGetMediaRental
 from rest_framework.permissions import IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 
@@ -76,7 +76,7 @@ class MediaRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 class MediaRentalsView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminGetMediaRental]
     queryset = Media.objects.all()
     serializer_class = HistoryRentals
     lookup_url_kwarg = "media_id" 
