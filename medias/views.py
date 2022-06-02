@@ -13,7 +13,7 @@ from rentals.services import dateTransform
 from users.models import User
 
 from .models import Media
-from .permissions import IsAdmin, IsCustomer
+from .permissions import IsAdmin, IsAdminGetMediaRental, IsCustomer
 from .serializers import FullMediaSerializer, HistoryRentals, MediaSerializer
 
 
@@ -95,7 +95,7 @@ class MediaRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 class MediaRentalsView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminGetMediaRental]
     queryset = Media.objects.all()
     serializer_class = HistoryRentals
     lookup_url_kwarg = "media_id"

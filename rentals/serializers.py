@@ -3,7 +3,7 @@ from rest_framework import serializers
 from medias.serializers import MediaRentalSerializer
 from payments.serializers import PaymentSerializer
 from rentals.models import Rental
-from users.serializers import CreateUserByClientSerializer                               
+from users.serializers import CreateUserByClientSerializer
 
 
 class RentalSerializer(serializers.Serializer):

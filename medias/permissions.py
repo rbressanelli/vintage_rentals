@@ -18,3 +18,9 @@ class IsCustomer(BasePermission):
         ):
             return False
         return True
+
+class IsAdminGetMediaRental(BasePermission):
+    def has_permission(self, request:Request, _):
+        if request.user.is_anonymous or not request.user.is_admin:
+            return False
+        return True
