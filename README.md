@@ -33,7 +33,7 @@ The return date of a rented media is chosen by the customer.
 ## 2. Application's links 🔗
 
 - <a name="API documentation" href="https://documenter.getpostman.com/view/19787362/Uz5CNeSX" target="_blank">API Documentation</a>
-- <a name="API deploy in Heroku" href="https://vintage-rentals-app.herokuapp.com/" target="_blank">API Deploy in Heroku</a>
+- <a name="API deploy in Heroku" href="https://vintage-rentals-api.herokuapp.com//" target="_blank">API Deploy in Heroku</a>
 
 ## 3. General Functionalities ⚙️
 
